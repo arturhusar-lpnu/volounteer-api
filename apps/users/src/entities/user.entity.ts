@@ -1,4 +1,4 @@
-import { USER_ROLES } from '@app/common/constants/enums/user-roles.enum';
+import { USER_ROLES } from '@app/common/constants/enums';
 import {
   Entity,
   PrimaryGeneratedColumn,

@@ -1,4 +1,4 @@
-import { USER_ROLES } from '@app/common/constants/enums/user-roles.enum';
+import { USER_ROLES } from '@app/common/constants/enums';
 
 export class GetUserDto {
   id: string;
