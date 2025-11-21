@@ -1,5 +1,6 @@
 import { PaymentTypes } from '@app/common/constants/enums';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Project } from './project.entity';
 
 @Entity('payment-links')
 export class PaymentLinks {
@@ -14,4 +15,7 @@ export class PaymentLinks {
 
   @Column()
   url: string;
+
+  @ManyToOne(() => Project, (project) => project.paymentLinks)
+  project: Project;
 }

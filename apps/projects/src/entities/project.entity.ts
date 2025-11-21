@@ -1,5 +1,12 @@
 import { ProjectStatus } from '@app/common/constants/enums';
-import { Column, Entity, PrimaryGeneratedColumn, Index } from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  Index,
+  OneToMany,
+} from 'typeorm';
+import { PaymentLinks } from './payment-links.entity';
 
 @Entity('projects')
 export class Project {
@@ -14,6 +21,9 @@ export class Project {
     enum: ProjectStatus,
   })
   status: ProjectStatus;
+
+  @OneToMany(() => PaymentLinks, (paymentLink) => paymentLink.project)
+  paymentLinks: PaymentLinks[];
 
   @Index()
   @Column({ type: 'uuid' })
