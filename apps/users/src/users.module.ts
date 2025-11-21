@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { User } from './entities';
+import { Role, User } from './entities';
 
 @Module({
   imports: [
@@ -20,10 +20,11 @@ import { User } from './entities';
         username: config.get('USERS_DB_USER'),
         password: config.get('USERS_DB_PASSWORD'),
         database: config.get('USERS_DB_NAME'),
-        entities: [User],
+        autoLoadEntities: true,
+        // entities: [User, Role],
       }),
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Role]),
   ],
   controllers: [UsersController],
   providers: [UsersService],

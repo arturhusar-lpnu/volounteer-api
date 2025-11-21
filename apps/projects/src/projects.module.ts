@@ -5,7 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TCP_PORTS, USERS_SERVICE } from '@app/common/constants/services';
-import { Project } from './entities';
+import { PaymentLinks, Project } from './entities';
 
 @Module({
   imports: [
@@ -22,10 +22,11 @@ import { Project } from './entities';
         username: config.get('PROJECTS_DB_USER'),
         password: config.get('PROJECTS_DB_PASSWORD'),
         database: config.get('PROJECTS_DB_NAME'),
-        entities: [Project],
+        autoLoadEntities: true,
+        // entities: [Project],
       }),
     }),
-    TypeOrmModule.forFeature([Project]),
+    TypeOrmModule.forFeature([Project, PaymentLinks]),
     ClientsModule.register([
       {
         name: USERS_SERVICE,

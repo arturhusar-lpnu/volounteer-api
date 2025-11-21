@@ -1,0 +1,104 @@
+services:
+  # PostgreSQL для Users Service
+  users-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: users_user
+      POSTGRES_PASSWORD: users_password
+      POSTGRES_DB: users_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - users_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U users_user -d users_db']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # PostgreSQL для Orders Service
+  projects-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: projects_user
+      POSTGRES_PASSWORD: projects_password
+      POSTGRES_DB: projects_db
+    ports:
+      - '5433:5432'
+    volumes:
+      - projects_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U projects_user -d projects_db']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis для кешування
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Users Microservice
+  users-service:
+    build:
+      context: .
+      dockerfile: ./apps/users/Dockerfile
+    environment:
+      USERS_DB_HOST: users-db
+      USERS_DB_PORT: 5432
+      USERS_DB_USER: users_user
+      USERS_DB_PASSWORD: users_password
+      USERS_DB_NAME: users_db
+    depends_on:
+      users-db:
+        condition: service_healthy
+    ports:
+      - '3001:3001'
+
+  # Projects Microservice
+  projects-service:
+    build:
+      context: .
+      dockerfile: ./apps/projects/Dockerfile
+    environment:
+      PROJECTS_DB_HOST: projects-db
+      PROJECTS_DB_PORT: 5432
+      PROJECTS_DB_USER: projects_user
+      PROJECTS_DB_PASSWORD: projects_password
+      PROJECTS_DB_NAME: projects_db
+      USERS_SERVICE_HOST: users-service
+    depends_on:
+      projects-db:
+        condition: service_healthy
+      users-service:
+        condition: service_started
+    ports:
+      - '3002:3002'
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+    environment:
+      USERS_SERVICE_HOST: users-service
+      PROJECTS_SERVICE_HOST: projects-service
+    depends_on:
+      - users-service
+      - projects-service
+      - redis
+    ports:
+      - '3000:3000'
+
+volumes:
+  users_data:
+  projects_data:
+  redis_data:
