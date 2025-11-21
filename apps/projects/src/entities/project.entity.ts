@@ -22,6 +22,9 @@ export class Project {
   })
   status: ProjectStatus;
 
+  @Column({ default: true })
+  active: boolean;
+
   @OneToMany(() => PaymentLinks, (paymentLink) => paymentLink.project)
   paymentLinks: PaymentLinks[];
 

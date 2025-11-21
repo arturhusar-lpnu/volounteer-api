@@ -1,10 +1,35 @@
 import { Module } from '@nestjs/common';
-import { ApiGatewayController } from './api-gateway.controller';
-import { ApiGatewayService } from './api-gateway.service';
+import { ConfigModule } from '@nestjs/config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import {
+  PROJECTS_SERVICE,
+  TCP_PORTS,
+  USERS_SERVICE,
+} from '@app/common/constants/services';
+import { UsersController } from './controllers';
 
 @Module({
-  imports: [],
-  controllers: [ApiGatewayController],
-  providers: [ApiGatewayService],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    ClientsModule.register([
+      {
+        name: USERS_SERVICE,
+        transport: Transport.TCP,
+        options: {
+          host: process.env.USERS_SERVICE_HOST || 'localhost',
+          port: TCP_PORTS.USERS,
+        },
+      },
+      {
+        name: PROJECTS_SERVICE,
+        transport: Transport.TCP,
+        options: {
+          host: process.env.PROJECTS_SERVICE_HOST || 'localhost',
+          port: TCP_PORTS.PROJECTS,
+        },
+      },
+    ]),
+  ],
+  controllers: [UsersController],
 })
 export class ApiGatewayModule {}
