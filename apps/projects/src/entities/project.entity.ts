@@ -33,6 +33,6 @@ export class Project {
   userId: string;
 
   @Index()
-  @Column({ type: 'uuid' })
+  @Column({ type: 'uuid', nullable: true })
   militaryUnitId: string;
 }

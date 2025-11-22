@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { RMQ_SERVICES } from '@app/common';
+import { ProjectStatus } from '@app/common/constants/enums';
 import {
   CreateProjectDto,
   ProjectDto,
@@ -45,7 +46,10 @@ export class ProjectsService {
       throw new BadRequestException(`Failed to verify user: ${error.message}`);
     }
 
-    const project = this.projectsRepository.create(dto);
+    const project = this.projectsRepository.create({
+      ...dto,
+      status: ProjectStatus.Created,
+    });
     return this.projectsRepository.save(project);
   }
 

@@ -1,0 +1,130 @@
+services:
+  # RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - '5672:5672' # AMQP порт
+      - '15672:15672' # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ['CMD', 'rabbitmq-diagnostics', 'check_running']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PostgreSQL для Users Service
+  users-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: users_user
+      POSTGRES_PASSWORD: users_password
+      POSTGRES_DB: users_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - users_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U users_user -d users_db']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # PostgreSQL для Projects Service
+  projects-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: projects_user
+      POSTGRES_PASSWORD: projects_password
+      POSTGRES_DB: projects_db
+    ports:
+      - '5433:5432'
+    volumes:
+      - projects_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U projects_user -d projects_db']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Users Service RMQ
+  users-rmq:
+    build:
+      context: .
+      dockerfile: ./apps/users-rmq/Dockerfile
+    environment:
+      RABBITMQ_URL: amqp://admin:admin@rabbitmq:5672
+      USERS_DB_HOST: users-db
+      USERS_DB_PORT: 5432
+      USERS_DB_USER: users_user
+      USERS_DB_PASSWORD: users_password
+      USERS_DB_NAME: users_db
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      users-db:
+        condition: service_healthy
+
+  # Projects Service RMQ
+  projects-rmq:
+    build:
+      context: .
+      dockerfile: ./apps/projects-rmq/Dockerfile
+    environment:
+      RABBITMQ_URL: amqp://admin:admin@rabbitmq:5672
+      PROJECTS_DB_HOST: projects-db
+      PROJECTS_DB_PORT: 5432
+      PROJECTS_DB_USER: projects_user
+      PROJECTS_DB_PASSWORD: projects_password
+      PROJECTS_DB_NAME: projects_db
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      projects-db:
+        condition: service_healthy
+      users-rmq:
+        condition: service_started
+
+  # API Gateway RMQ
+  api-gateway-rmq:
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway-rmq/Dockerfile
+    environment:
+      RABBITMQ_URL: amqp://admin:admin@rabbitmq:5672
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      PORT: 8080
+    ports:
+      - '8080:8080'
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      users-rmq:
+        condition: service_started
+      projects-rmq:
+        condition: service_started
+
+volumes:
+  rabbitmq_data:
+  users_data:
+  projects_data:
+  redis_data:
