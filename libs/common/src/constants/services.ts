@@ -9,3 +9,13 @@ export const TCP_PORTS = {
   PROJECTS: 3003,
   NOTIFICATIONS: 3006,
 };
+
+export const RMQ_SERVICES = {
+  USERS: 'USERS_SERVICE_RMQ',
+  PROJECTS: 'PROJECTS_SERVICE_RMQ',
+};
+
+export const RMQ_QUEUES = {
+  USERS: 'users_queue',
+  PROJECTS: 'projects_queue',
+};

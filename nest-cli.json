@@ -19,6 +19,15 @@
         "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
       }
     },
+    "api-gateway-rmq": {
+      "type": "application",
+      "root": "apps/api-gateway-rmq",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway-rmq/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway-rmq/tsconfig.app.json"
+      }
+    },
     "auth": {
       "type": "application",
       "root": "apps/auth",
@@ -64,6 +73,15 @@
         "tsConfigPath": "apps/projects/tsconfig.app.json"
       }
     },
+    "projects-rmq": {
+      "type": "application",
+      "root": "apps/projects-rmq",
+      "entryFile": "main",
+      "sourceRoot": "apps/projects-rmq/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/projects-rmq/tsconfig.app.json"
+      }
+    },
     "users": {
       "type": "application",
       "root": "apps/users",
@@ -71,6 +89,15 @@
       "sourceRoot": "apps/users/src",
       "compilerOptions": {
         "tsConfigPath": "apps/users/tsconfig.app.json"
+      }
+    },
+    "users-rmq": {
+      "type": "application",
+      "root": "apps/users-rmq",
+      "entryFile": "main",
+      "sourceRoot": "apps/users-rmq/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/users-rmq/tsconfig.app.json"
       }
     }
   }
