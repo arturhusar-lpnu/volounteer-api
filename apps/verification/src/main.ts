@@ -1,21 +1,24 @@
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { ProjectsModule } from './projects.module';
-import { TCP_PORTS } from '@app/common/constants/services';
+import { VerificationModule } from './verification.module';
+import { TCP_PORTS } from '@app/common';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    ProjectsModule,
+    VerificationModule,
     {
       transport: Transport.TCP,
       options: {
         host: '0.0.0.0',
-        port: TCP_PORTS.PROJECTS,
+        port: TCP_PORTS.VERIFICATION,
       },
     },
   );
+
   await app.listen();
-  console.log(`Projects Service is listening on port ${TCP_PORTS.PROJECTS}`);
+  console.log(
+    `Verification Service is listening on port ${TCP_PORTS.VERIFICATION}`,
+  );
 }
 
 void bootstrap();
