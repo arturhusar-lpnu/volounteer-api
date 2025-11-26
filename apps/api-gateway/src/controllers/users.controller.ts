@@ -1,9 +1,10 @@
-import { USERS_SERVICE } from '@app/common/constants/services';
+import { USERS_SERVICE } from '@app/common';
 import {
   CreateUserDto,
   DeleteUserDto,
   UpdateUserDto,
 } from '@app/common/dto/users';
+import { JwtAuthGuard } from '@app/common/guards';
 import { USER_PATTERNS } from '@app/common/patterns/users';
 import {
   Body,
@@ -14,6 +15,7 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
@@ -25,6 +27,7 @@ export class UsersController {
   ) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   create(@Body() dto: CreateUserDto) {
     return firstValueFrom(this.usersClient.send(USER_PATTERNS.CREATE, dto));
   }
@@ -40,6 +43,7 @@ export class UsersController {
   }
 
   @Patch('update')
+  @UseGuards(JwtAuthGuard)
   update(@Body() dto: UpdateUserDto) {
     return firstValueFrom(
       this.usersClient.send(USER_PATTERNS.UPDATE, { ...dto }),
@@ -47,6 +51,7 @@ export class UsersController {
   }
 
   @Delete(':id/remove')
+  @UseGuards(JwtAuthGuard)
   delete(@Param('id') id: string) {
     const payload: DeleteUserDto = { id };
     return firstValueFrom(this.usersClient.send(USER_PATTERNS.DELETE, payload));

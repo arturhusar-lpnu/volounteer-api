@@ -1,5 +1,6 @@
-import { PROJECTS_SERVICE } from '@app/common/constants/services';
+import { PROJECTS_SERVICE } from '@app/common';
 import { CreateProjectDto, UpdateProjectDto } from '@app/common/dto/projects';
+import { JwtAuthGuard } from '@app/common/guards';
 import { PROJECTS_PATTERNS } from '@app/common/patterns/projects';
 import {
   Body,
@@ -10,6 +11,7 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
@@ -21,6 +23,7 @@ export class ProjectsController {
   ) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   create(@Body() dto: CreateProjectDto) {
     return firstValueFrom(
       this.projectsClient.send(PROJECTS_PATTERNS.CREATE, dto),
@@ -42,6 +45,7 @@ export class ProjectsController {
   }
 
   @Patch('update')
+  @UseGuards(JwtAuthGuard)
   update(@Body() dto: UpdateProjectDto) {
     const payload = { ...dto };
 
@@ -51,6 +55,7 @@ export class ProjectsController {
   }
 
   @Delete(':id/remove')
+  @UseGuards(JwtAuthGuard)
   delete(@Param('id') id: string) {
     return firstValueFrom(
       this.projectsClient.send(PROJECTS_PATTERNS.DELETE, id),

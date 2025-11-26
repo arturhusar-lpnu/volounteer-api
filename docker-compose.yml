@@ -61,7 +61,7 @@ services:
       users-db:
         condition: service_healthy
     ports:
-      - '3001:3001'
+      - '3002:3002'
 
   # Projects Microservice
   projects-service:
@@ -81,17 +81,31 @@ services:
       users-service:
         condition: service_started
     ports:
-      - '3002:3002'
-
+      - '3003:3003'
+  auth-service:
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+    environment:
+      JWT_SECRET: '7c45dcca58590cfb541f9754ee4c9e0a'
+      JWT_EXPIRES_IN: 14400
+      USERS_SERVICE_HOST: users-service
+    depends_on:
+      users-service:
+        condition: service_started
+    ports:
+      - '3001:3001'
   # API Gateway
   api-gateway:
     build:
       context: .
       dockerfile: ./apps/api-gateway/Dockerfile
     environment:
+      AUTH_SERVICE_HOST: auth-service
       USERS_SERVICE_HOST: users-service
       PROJECTS_SERVICE_HOST: projects-service
     depends_on:
+      - auth-service
       - users-service
       - projects-service
       - redis

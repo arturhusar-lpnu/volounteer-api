@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AUTH_PATTERNS } from '@app/common/patterns/auth/message-pattern';
 import { MessagePattern, Payload } from '@nestjs/microservices';
@@ -12,11 +12,14 @@ import { ValidatedUser } from '@app/common/types';
 
 @Controller()
 export class AuthController {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(private readonly authService: AuthService) {}
 
   @MessagePattern(AUTH_PATTERNS.REGISTER)
   async register(@Payload() dto: RegisterDto): Promise<AuthResponseDto> {
-    return this.authService.register(dto);
+    this.logger.log(`Registration attempt ${JSON.stringify(dto)}`);
+    return await this.authService.register(dto);
   }
 
   @MessagePattern(AUTH_PATTERNS.LOGIN)

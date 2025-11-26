@@ -6,7 +6,7 @@ import {
   PROJECTS_SERVICE,
   TCP_PORTS,
   USERS_SERVICE,
-} from '@app/common/constants/services';
+} from '@app/common';
 import {
   ProjectsController,
   UsersController,
