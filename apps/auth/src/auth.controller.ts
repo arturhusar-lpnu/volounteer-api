@@ -2,7 +2,12 @@ import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AUTH_PATTERNS } from '@app/common/patterns/auth/message-pattern';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { AuthResponseDto, LoginDto, RegisterDto } from '@app/common/dto/auth';
+import {
+  AuthResponseDto,
+  LoginDto,
+  RegisterDto,
+  VerifyTokenResponseDto,
+} from '@app/common/dto/auth';
 import { ValidatedUser } from '@app/common/types';
 
 @Controller()
@@ -20,7 +25,7 @@ export class AuthController {
   }
 
   @MessagePattern(AUTH_PATTERNS.VERIFY_TOKEN)
-  async verifyToken(@Payload() token: string): Promise<any> {
+  async verifyToken(@Payload() token: string): Promise<VerifyTokenResponseDto> {
     const payload = this.authService.verifyToken(token);
     const user = await this.authService.validateUser(payload.sub);
 
