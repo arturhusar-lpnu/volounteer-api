@@ -4,24 +4,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
-  Injectable,
   ExecutionContext,
-  Inject,
   CanActivate,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AUTH_SERVICE } from '../constants/services';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom, timeout } from 'rxjs';
 import { AUTH_PATTERNS } from '../patterns/auth';
 import { VerifyTokenResponseDto } from '../dto/auth';
 
-@Injectable()
+/** @internal */
 export class JwtAuthGuard implements CanActivate {
-  constructor(
-    @Inject(AUTH_SERVICE)
-    private readonly authClient: ClientProxy,
-  ) {}
+  constructor(protected readonly authClient: ClientProxy) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();

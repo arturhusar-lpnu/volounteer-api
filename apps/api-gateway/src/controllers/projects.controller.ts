@@ -1,6 +1,6 @@
 import { PROJECTS_SERVICE } from '@app/common';
 import { CreateProjectDto, UpdateProjectDto } from '@app/common/dto/projects';
-import { JwtAuthGuard } from '@app/common/guards';
+import { TcpJwtGuard as JwtAuthGuard } from '@app/common/guards';
 import { PROJECTS_PATTERNS } from '@app/common/patterns/projects';
 import {
   Body,

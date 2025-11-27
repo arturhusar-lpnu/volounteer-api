@@ -12,11 +12,13 @@ export const TCP_PORTS = {
 };
 
 export const RMQ_SERVICES = {
+  AUTH: 'AUTH_SERVICE_RMQ',
   USERS: 'USERS_SERVICE_RMQ',
   PROJECTS: 'PROJECTS_SERVICE_RMQ',
 };
 
 export const RMQ_QUEUES = {
+  AUTH: 'auth_queue',
   USERS: 'users_queue',
   PROJECTS: 'projects_queue',
 };

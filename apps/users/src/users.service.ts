@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import {
   CreateUserDto,
-  GetUserDto,
+  UserDto,
   UpdateUserDto,
   DeleteUserDto,
 } from '@app/common/dto/users';
@@ -26,7 +26,7 @@ export class UsersService {
     return user;
   }
 
-  async create(createUserDto: CreateUserDto): Promise<GetUserDto> {
+  async create(createUserDto: CreateUserDto): Promise<UserDto> {
     const newUser = this.userRepository.create(createUserDto);
     return await this.userRepository.save(newUser);
   }

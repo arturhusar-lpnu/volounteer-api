@@ -10,7 +10,7 @@ import {
   Payload,
   RmqContext,
 } from '@nestjs/microservices';
-import { CreateUserDto, UpdateUserDto } from '@app/common/dto/users';
+import { CreateUserDto, UpdateUserDto, UserDto } from '@app/common/dto/users';
 
 @Controller()
 export class UsersRmqController {
@@ -35,6 +35,14 @@ export class UsersRmqController {
   @MessagePattern(USER_PATTERNS.FIND_ONE)
   async findOne(@Payload() id: string, @Ctx() context: RmqContext) {
     const result = await this.usersService.findOne(id);
+    this.acknowledgeMessage(context);
+    return result;
+  }
+
+  @MessagePattern(USER_PATTERNS.FIND_BY_EMAIL)
+  async findByEmail(@Payload() email: string, @Ctx() context: RmqContext) {
+    const result: UserDto = await this.usersService.findByEmail(email);
+
     this.acknowledgeMessage(context);
     return result;
   }

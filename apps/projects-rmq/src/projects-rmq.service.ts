@@ -28,7 +28,6 @@ export class ProjectsService {
   ) {}
 
   async create(dto: CreateProjectDto): Promise<Project> {
-    // Перевіряємо існування користувача через RabbitMQ
     try {
       const user = await firstValueFrom(
         this.usersClient.send(USER_PATTERNS.FIND_ONE, dto.userId).pipe(

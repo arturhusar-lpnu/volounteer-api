@@ -4,7 +4,7 @@ import {
   DeleteUserDto,
   UpdateUserDto,
 } from '@app/common/dto/users';
-import { JwtAuthGuard } from '@app/common/guards';
+import { TcpJwtGuard as JwtAuthGuard } from '@app/common/guards';
 import { USER_PATTERNS } from '@app/common/patterns/users';
 import {
   Body,

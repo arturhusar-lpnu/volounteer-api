@@ -1,7 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { RMQ_QUEUES, RMQ_SERVICES, RmqModule } from '@app/common';
-import { UsersController, ProjectsController } from './controllers';
+import {
+  UsersController,
+  ProjectsController,
+  AuthController,
+} from './controllers';
 
 @Module({
   imports: [
@@ -14,7 +18,11 @@ import { UsersController, ProjectsController } from './controllers';
       name: RMQ_SERVICES.PROJECTS,
       queue: RMQ_QUEUES.PROJECTS,
     }),
+    RmqModule.register({
+      name: RMQ_SERVICES.AUTH,
+      queue: RMQ_QUEUES.AUTH,
+    }),
   ],
-  controllers: [UsersController, ProjectsController],
+  controllers: [UsersController, ProjectsController, AuthController],
 })
 export class ApiGatewayRmqModule {}

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Controller } from '@nestjs/common';
 import { ProjectsService } from './projects-rmq.service';
 import {
@@ -11,10 +8,13 @@ import {
 } from '@nestjs/microservices';
 import { PROJECTS_PATTERNS } from '@app/common/patterns/projects';
 import { CreateProjectDto, UpdateProjectDto } from '@app/common/dto/projects';
+import { RmqBaseController } from '@app/common/rmq';
 
 @Controller()
-export class ProjectsRmqController {
-  constructor(private readonly projectsService: ProjectsService) {}
+export class ProjectsRmqController extends RmqBaseController {
+  constructor(private readonly projectsService: ProjectsService) {
+    super();
+  }
 
   @MessagePattern(PROJECTS_PATTERNS.CREATE)
   async create(@Payload() dto: CreateProjectDto, @Ctx() context: RmqContext) {
@@ -59,11 +59,5 @@ export class ProjectsRmqController {
     this.acknowledgeMessage(context);
 
     return result;
-  }
-
-  private acknowledgeMessage(context: RmqContext) {
-    const channel = context.getChannelRef();
-    const originalMessage = context.getMessage();
-    channel.ack(originalMessage);
   }
 }

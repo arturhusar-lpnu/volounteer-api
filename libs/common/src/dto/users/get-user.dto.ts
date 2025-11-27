@@ -1,6 +1,6 @@
 import { USER_ROLES } from '@app/common/constants/enums';
 
-export class GetUserDto {
+export class UserDto {
   id: string;
   email: string;
   name: string;

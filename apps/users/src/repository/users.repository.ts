@@ -11,7 +11,6 @@ export class UserRepository
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super(userRepository);
   }
 }

@@ -1,1 +1,2 @@
-export * from './jwt-auth.guard';
+export * from './tcp-jwt.guard';
+export * from './rmq-jwt.guard';

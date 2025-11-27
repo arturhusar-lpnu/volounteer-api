@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { AUTH_SERVICE } from '@app/common';
+import { RMQ_SERVICES } from '@app/common';
 import { CurrentUser } from '@app/common/decorators';
 import { LoginDto, RegisterDto } from '@app/common/dto/auth';
-import { TcpJwtGuard as JwtAuthGuard } from '@app/common/guards';
+import { RmqJwtGuard as JwtAuthGuard } from '@app/common/guards';
 import { AUTH_PATTERNS } from '@app/common/patterns/auth';
 import {
   Body,
@@ -23,7 +23,9 @@ import { firstValueFrom, timeout } from 'rxjs';
 @Controller('auth')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
-  constructor(@Inject(AUTH_SERVICE) private readonly authClient: ClientProxy) {}
+  constructor(
+    @Inject(RMQ_SERVICES.AUTH) private readonly authClient: ClientProxy,
+  ) {}
 
   @Post('register')
   async register(@Body() dto: RegisterDto) {

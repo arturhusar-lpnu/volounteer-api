@@ -101,6 +101,20 @@ services:
       users-rmq:
         condition: service_started
 
+  auth-rmq:
+    build:
+      context: .
+      dockerfile: ./apps/auth-rmq/Dockerfile
+    environment:
+      RABBITMQ_URL: amqp://admin:admin@rabbitmq:5672
+      JWT_SECRET: '7c45dcca58590cfb541f9754ee4c9e0a'
+      JWT_EXPIRES_IN: 14400
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      users-rmq:
+        condition: service_started
+
   # API Gateway RMQ
   api-gateway-rmq:
     build:
@@ -121,6 +135,8 @@ services:
       users-rmq:
         condition: service_started
       projects-rmq:
+        condition: service_started
+      auth-rmq:
         condition: service_started
 
 volumes:
